@@ -13,6 +13,105 @@ Built to actually learn **regression**, **classification**, **clustering**, and
 
 ---
 
+## Concepts covered
+
+A glossary of every technique and term used in this project, in plain language.
+
+**Supervised vs. unsupervised learning** — supervised learning trains on data
+that already has the "right answer" attached (e.g. we know each patient's
+actual `charges`); the model learns to predict that answer for new data.
+Unsupervised learning has no right answer to learn from — it finds structure
+(like groupings) in the data on its own. Regression and classification below
+are supervised; clustering is unsupervised.
+
+**Regression** — predicting a *continuous number* (here, medical cost in
+dollars). "How much" rather than "which category."
+
+**Classification** — predicting a *category* (here, high-cost-risk: yes/no).
+"Which bucket" rather than "how much."
+
+**Clustering** — grouping data points by similarity with no predefined labels.
+The algorithm decides what the groups are; we interpret what they mean afterward.
+
+**Anomaly detection** — flagging data points that don't fit the normal pattern.
+Can be built from a regression model's errors (residual-based) or from a model
+designed specifically for it (Isolation Forest).
+
+**Train/test split** — splitting data so the model trains on one portion and
+is evaluated on a portion it never saw during training. Without this, a model
+could simply memorize the training data and look perfect while being useless
+on new patients. **Stratified** split (used in classification) keeps the same
+class proportions (e.g. 75% low-cost / 25% high-cost) in both the train and
+test sets.
+
+**Overfitting** — when a model learns the training data too specifically
+(including its noise) instead of the general pattern, so it performs well on
+training data but poorly on new data. Comparing a simple model (Linear
+Regression) against a more flexible one (Random Forest) on the *same* held-out
+test set is one way to catch this.
+
+**One-Hot Encoding** — converting a text category (e.g. `region`:
+northeast/northwest/southeast/southwest) into separate 0/1 columns, since
+models need numbers, not text.
+
+**Feature scaling (StandardScaler)** — rescaling numeric features (age, bmi)
+to a common scale (mean 0, standard deviation 1). Needed for distance-based
+methods like K-Means, where a feature with naturally larger numbers (age:
+18–64) would otherwise dominate a feature with smaller numbers unfairly.
+
+**MAE / RMSE / R²** — three ways to score a regression model. **MAE** (Mean
+Absolute Error) is the average dollar amount the prediction was off by — easy
+to interpret directly. **RMSE** (Root Mean Squared Error) is similar but
+penalizes large misses more heavily. **R²** is the fraction of the target's
+variance the model explains (0 = no better than guessing the average, 1 =
+perfect).
+
+**Precision / Recall / F1** — three ways to score a classifier, especially
+important when classes are imbalanced (see below). **Precision**: of everyone
+the model flagged, what fraction actually belonged to that class? **Recall**:
+of everyone who actually belonged to that class, what fraction did the model
+catch? **F1**: the balance of the two, useful when you care about both.
+
+**ROC-AUC** — measures how well a model *ranks* positive cases above negative
+ones, across every possible decision threshold (not just the default 0.5).
+0.5 = random guessing, 1.0 = perfect ranking. Can disagree with F1, since F1
+is tied to one specific threshold.
+
+**Confusion matrix** — a 2×2 table of actual vs. predicted class (true
+positives, false positives, true negatives, false negatives) that every other
+classification metric above is calculated from.
+
+**Class imbalance** — when one category is much rarer than another (here,
+25% high-cost vs. 75% low-cost). Dangerous because a model that always
+predicts the majority class can still score high on plain accuracy while
+being useless — this is why precision/recall/F1 matter more than accuracy alone.
+
+**K-Means** — a clustering algorithm that groups points into *k* clusters by
+repeatedly assigning each point to its nearest cluster center, then recomputing
+the centers, until it stabilizes. *k* has to be chosen in advance.
+
+**Elbow method / Silhouette score** — two ways to choose *k* for K-Means when
+there's no obviously "correct" number of clusters. The elbow method looks for
+where adding more clusters stops meaningfully reducing error. The silhouette
+score (used here) directly measures how distinct and well-separated the
+clusters are, from -1 (bad) to 1 (perfect).
+
+**Isolation Forest** — an algorithm built specifically for anomaly detection.
+It randomly splits the data repeatedly; outliers get isolated in fewer splits
+than normal points because they sit further from everything else.
+
+**Ensemble learning (Random Forest)** — combining many individual models
+(here, many decision trees, each trained on a random subset of the data) and
+averaging their predictions. Usually more accurate and more resistant to
+overfitting than any single model in the ensemble.
+
+**Pipeline** (scikit-learn) — chaining preprocessing steps (like one-hot
+encoding) and a model together into one object, so the same transformations
+are applied consistently to both training data and any new data at prediction
+time.
+
+---
+
 ## Dataset
 
 [`data/insurance.csv`](data/insurance.csv) — the public **Medical Cost Personal
